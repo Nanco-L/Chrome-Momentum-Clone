@@ -141,10 +141,17 @@ input[type="submit"] {
     margin-bottom: 15px;
 }
 
-.clear-btn {
+.btns {
     position: absolute;
     bottom: 40px;
     right: 40px;
+    display: flex;
+    gap: 20px;
+}
+
+.btns input {
+    width: 200px;
+    text-align: center;
 }
 
 .hidden {

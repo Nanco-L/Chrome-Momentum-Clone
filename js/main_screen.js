@@ -1,9 +1,65 @@
+const loginForm = document.querySelector(".login-form");
+const loginInput = loginForm.querySelector("input");
+const greeting = document.querySelector(".greeting");
+const btns = document.querySelector(".btns");
+const clearBtn = document.querySelector(".clear-btn");
+const todoClearBtn = document.querySelector(".todo-clear-btn");
+
+const visibleWithStorages = [".greeting", ".todo-form", ".todo-list", ".btns"];
+
+const HIDDEN_CLASSNAME = "hidden";
+const USERNAME_KEY = "username";
+
 const toDoForm = document.querySelector(".todo-form");
 const toDoInput = toDoForm.querySelector("input");
 const toDoList = document.querySelector(".todo-list");
 
 const TODOS_KEY = "todos";
 let toDos = [];
+
+function onLoginSubmit(event) {
+    event.preventDefault();
+    const username = loginInput.value;
+    loginForm.classList.add(HIDDEN_CLASSNAME);
+    localStorage.setItem(USERNAME_KEY, username);
+    paintGreetings(username);
+}
+
+function clearToDo() {
+    document.querySelectorAll(".todo-list li").forEach((item) => item.remove());
+    toDos = [];
+    saveToDo();
+}
+
+function onClearSubmit(event) {
+    event.preventDefault();
+    localStorage.clear();
+    paintLogIn();
+    clearToDo();
+}
+
+function onTodoClearSubmit(event) {
+    event.preventDefault();
+    clearToDo();
+    // localStorage.removeItem("todos");
+}
+
+function paintGreetings(username) {
+    greeting.innerText = `Hello ${username}`;
+    visibleWithStorages.forEach((item) =>
+        document.querySelector(item).classList.remove(HIDDEN_CLASSNAME)
+    );
+    clearBtn.addEventListener("submit", onClearSubmit);
+    todoClearBtn.addEventListener("submit", onTodoClearSubmit);
+}
+
+function paintLogIn() {
+    loginForm.classList.remove(HIDDEN_CLASSNAME);
+    visibleWithStorages.forEach((item) =>
+        document.querySelector(item).classList.add(HIDDEN_CLASSNAME)
+    );
+    loginForm.addEventListener("submit", onLoginSubmit);
+}
 
 function saveToDo() {
     localStorage.setItem(TODOS_KEY, JSON.stringify(toDos));
@@ -55,6 +111,14 @@ function handleToDoSubmit(event) {
     };
     paintToDo(newToDoObj);
     saveToDo();
+}
+
+const savedUsername = localStorage.getItem(USERNAME_KEY);
+
+if (savedUsername === null) {
+    paintLogIn();
+} else {
+    paintGreetings(savedUsername);
 }
 
 toDoForm.addEventListener("submit", handleToDoSubmit);
